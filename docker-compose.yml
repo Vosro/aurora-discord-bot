@@ -3,6 +3,8 @@ services:
   main:
     build: .
     network_mode: host
+    cap_add:
+      - NET_RAW
     container_name: aurora-discord-bot
     restart: unless-stopped
     environment:
