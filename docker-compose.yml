@@ -3,6 +3,8 @@ services:
   main:
     build: .
     network_mode: host
+    privileged: true
+    user: "0:0"
     cap_add:
       - NET_RAW
     container_name: aurora-discord-bot
