@@ -24,12 +24,12 @@ class WoLMenu(discord.ui.View):
     @discord.ui.button(label="Justin", style=discord.ButtonStyle.blurple)
     async def button_one(self, interaction, button):
         send_magic_packet(justin_mac_address)
-        await interaction.response.send_message("Sent Wake-on-LAN packet to Justin's PC.")
+        await interaction.response.send_message("waking this bitch up")
 
     @discord.ui.button(label="Bingo", style=discord.ButtonStyle.red)
     async def button_two(self, interaction, button):
         send_magic_packet(bingo_mac_address)
-        await interaction.response.send_message("Sent Wake-on-LAN packet to Bingo.")
+        await interaction.response.send_message("waking Bingo up")
 
 @bot.event
 async def on_ready():
