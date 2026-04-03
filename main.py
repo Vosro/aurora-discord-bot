@@ -21,12 +21,12 @@ intents.voice_states = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 class WoLMenu(discord.ui.View):
-    @discord.ui.button(label="Justin", style=discord.ButtonStyle.primary)
+    @discord.ui.button(label="Justin", style=discord.ButtonStyle.blurple)
     async def button_one(self, interaction, button):
         send_magic_packet(justin_mac_address)
         await interaction.response.send_message("Sent Wake-on-LAN packet to Justin's PC.")
 
-    @discord.ui.button(label="Bingo", style=discord.ButtonStyle.danger)
+    @discord.ui.button(label="Bingo", style=discord.ButtonStyle.red)
     async def button_two(self, interaction, button):
         send_magic_packet(bingo_mac_address)
         await interaction.response.send_message("Sent Wake-on-LAN packet to Bingo.")
