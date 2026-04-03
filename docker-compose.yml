@@ -6,3 +6,5 @@ services:
     restart: unless-stopped
     environment:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - justin_mac_address=${JUSTIN_MAC_ADDRESS}
+      - bingo_mac_address=${BINGO_MAC_ADDRESS}
