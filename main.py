@@ -18,7 +18,7 @@ intents.message_content = True
 intents.members = True
 intents.voice_states = True
 
-bot = commands.Bot(command_prefix='!', intents=intents, status=discord.status.idle, activity=discord.CustomActivity(name="jorkin it"))
+bot = commands.Bot(command_prefix='!', intents=intents, status=discord.Status.idle, activity=discord.CustomActivity(name="jorkin it"))
 
 class WoLMenu(discord.ui.View):
     @discord.ui.button(label="Justin", style=discord.ButtonStyle.blurple)
