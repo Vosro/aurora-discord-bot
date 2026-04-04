@@ -18,18 +18,18 @@ intents.message_content = True
 intents.members = True
 intents.voice_states = True
 
-bot = commands.Bot(command_prefix='!', intents=intents)
+bot = commands.Bot(command_prefix='!', intents=intents, status=discord.status.idle, activity=discord.CustomActivity(name="jorkin it"))
 
 class WoLMenu(discord.ui.View):
     @discord.ui.button(label="Justin", style=discord.ButtonStyle.blurple)
     async def button_one(self, interaction, button):
         send_magic_packet(justin_mac_address)
-        await interaction.response.send_message("waking this bitch up")
+        await interaction.response.send_message("waking this bitch up", delete_after=10)
 
     @discord.ui.button(label="Bingo", style=discord.ButtonStyle.red)
     async def button_two(self, interaction, button):
         send_magic_packet(bingo_mac_address)
-        await interaction.response.send_message("waking Bingo up")
+        await interaction.response.send_message("waking Bingo up", delete_after=10)
 
 @bot.event
 async def on_ready():
@@ -68,21 +68,18 @@ async def leave(ctx):
 @bot.command()
 @commands.has_permissions(administrator=True)
 async def wake(ctx):
+    await ctx.message.delete()
     await ctx.send("Choose a device to wake up:", view=WoLMenu(), delete_after=30)
 
 @bot.event
 async def on_typing(channel, user, when):
     if random.randint(1, 100) == 1 and user != bot.user:
         responses = [
-            f"I see you are typing... {user.mention}",
-            "What are you going to say?",
-            "Don't keep me waiting!",
-            "I'm all ears!",
-            "Can't wait to read your message!"
+            f"oh brother {user.name} is typing again",
+            f"what is it this time {user.name}?",
         ]
         response = random.choice(responses)
         await channel.send(response)
-
 
 
 bot.run(token, log_handler=handler, log_level=logging.DEBUG)
