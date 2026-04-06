@@ -36,8 +36,9 @@ async def on_ready():
     print(f"Logged in as {bot.user} (ID: {bot.user.id})")
 
 @bot.command()
-async def ping(ctx):
-    await ctx.send('Pong!')
+async def test(ctx):
+    await ctx.send(f"test command initiated by {ctx.author.mention}, {bot.user.name} is online and ready to respond")
+
 
 @bot.command()
 async def join(ctx):
@@ -47,7 +48,7 @@ async def join(ctx):
         await ctx.message.delete()
         await ctx.send(f"Joined {channel.name}", delete_after=5)
     else:
-        await ctx.send("You are not connected to a voice channel.")
+        await ctx.send("You are not connected to a voice channel.", delete_after=5)
 
 @bot.event
 async def on_voice_state_update(member, before, after):
@@ -62,7 +63,7 @@ async def leave(ctx):
         await ctx.voice_client.disconnect()
         await ctx.send("Left the voice channel.")
     else:
-        await ctx.send("I am not connected to a voice channel.")
+        await ctx.send("I am not connected to a voice channel.", delete_after=5)
 
 
 @bot.command()
