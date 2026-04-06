@@ -20,7 +20,7 @@ intents.voice_states = True
 
 bot = commands.Bot(command_prefix='!', intents=intents, status=discord.Status.idle, activity=discord.CustomActivity(name="jorkin it"))
 
-
+## verifies bot is running and commands are synced
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user} (ID: {bot.user.id})")
@@ -30,22 +30,24 @@ async def on_ready():
     except Exception as e:
         print(f"Error syncing commands: {e}")
 
+#ui for the "wake" command
 class WoLMenu(discord.ui.View):
     @discord.ui.button(label="Justin", style=discord.ButtonStyle.blurple)
     async def button_one(self, interaction, button):
         send_magic_packet(justin_mac_address)
-        await interaction.response.send_message("waking this bitch up", delete_after=10)
+        await interaction.response.send_message("waking this bitch up", ephemeral=True, delete_after=10)
 
     @discord.ui.button(label="Bingo", style=discord.ButtonStyle.red)
     async def button_two(self, interaction, button):
         send_magic_packet(bingo_mac_address)
-        await interaction.response.send_message("waking Bingo up", delete_after=10)
+        await interaction.response.send_message("waking Bingo up", ephemeral=True, delete_after=10)
 
+#simple test to see if bot is running properly within discord
 @bot.tree.command(name="test")
 async def test(interaction: discord.Interaction):
     await interaction.response.send_message(f"test command initiated by {interaction.user.mention}, {bot.user.name} is online and ready to respond. Local Portainer can be reached at https://192.168.1.154:9443/#!/home if needed.", ephemeral=True)
 
-
+#voice join test
 @bot.command()
 async def join(ctx):
     if ctx.author.voice:
@@ -56,13 +58,7 @@ async def join(ctx):
     else:
         await ctx.send("You are not connected to a voice channel.", delete_after=5)
 
-@bot.event
-async def on_voice_state_update(member, before, after):
-    voice_client = member.guild.voice_client
-    if voice_client and len(voice_client.channel.members) == 1:
-        await voice_client.disconnect()
-        print(f"Left the voice channel because {member} was the last one there.")
-
+#voice leave test
 @bot.command()
 async def leave(ctx):
     if ctx.voice_client:
@@ -71,11 +67,21 @@ async def leave(ctx):
     else:
         await ctx.send("I am not connected to a voice channel.", delete_after=5)
 
-@bot.tree.command(name="wake")
-@commands.has_permissions(administrator=True)
-async def wake(interaction: discord.Interaction):
-    await interaction.response.send_message("Choose a device to wake up:", view=WoLMenu(), ephemeral=True)
+#voice leave test if alone
+@bot.event
+async def on_voice_state_update(member, before, after):
+    voice_client = member.guild.voice_client
+    if voice_client and len(voice_client.channel.members) == 1:
+        await voice_client.disconnect()
+        print(f"Left the voice channel because {member} was the last one there.")
 
+
+#command to wake up devices using WoL, buttons are generated from the WoLMenu class
+@bot.tree.command(name="wake")
+async def wake(interaction: discord.Interaction):
+    await interaction.response.send_message("Choose a device to wake up:", view=WoLMenu(), ephemeral=True, delete_after=30)
+
+#1% chance to respond to someone typing
 @bot.event
 async def on_typing(channel, user, when):
     if random.randint(1, 100) == 1 and user != bot.user:
