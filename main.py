@@ -20,6 +20,16 @@ intents.voice_states = True
 
 bot = commands.Bot(command_prefix='!', intents=intents, status=discord.Status.idle, activity=discord.CustomActivity(name="jorkin it"))
 
+
+@bot.event
+async def on_ready():
+    print(f"Logged in as {bot.user} (ID: {bot.user.id})")
+    try:
+        synced = await bot.tree.sync()
+        print(f"Synced {len(synced)} command(s)")
+    except Exception as e:
+        print(f"Error syncing commands: {e}")
+
 class WoLMenu(discord.ui.View):
     @discord.ui.button(label="Justin", style=discord.ButtonStyle.blurple)
     async def button_one(self, interaction, button):
@@ -31,14 +41,9 @@ class WoLMenu(discord.ui.View):
         send_magic_packet(bingo_mac_address)
         await interaction.response.send_message("waking Bingo up", delete_after=10)
 
-@bot.event
-async def on_ready():
-    print(f"Logged in as {bot.user} (ID: {bot.user.id})")
-
-@bot.command()
-async def test(ctx):
-    await ctx.message.delete()
-    await ctx.send(f"test command initiated by {ctx.author.mention}, {bot.user.name} is online and ready to respond. Local Portainer can be reached at https://192.168.1.154:9443/#!/home if needed.", delete_after=10)
+@bot.tree.command(name="test")
+async def test(interaction: discord.Interaction):
+    await interaction.response.send_message(f"test command initiated by {interaction.user.mention}, {bot.user.name} is online and ready to respond. Local Portainer can be reached at https://192.168.1.154:9443/#!/home if needed.", ephemeral=True)
 
 
 @bot.command()
@@ -65,7 +70,6 @@ async def leave(ctx):
         await ctx.send("Left the voice channel.")
     else:
         await ctx.send("I am not connected to a voice channel.", delete_after=5)
-
 
 @bot.command()
 @commands.has_permissions(administrator=True)
