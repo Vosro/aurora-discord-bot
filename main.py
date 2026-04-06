@@ -1,4 +1,4 @@
-from ast import arg
+from unittest import result
 
 import discord
 from discord import app_commands
@@ -8,11 +8,14 @@ from dotenv import load_dotenv
 import os
 from wakeonlan import send_magic_packet
 import random
+import wom
 
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
 justin_mac_address = os.getenv('justin_mac_address')
 bingo_mac_address = os.getenv('bingo_mac_address')
+
+client = wom.Client()
 
 handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 intents = discord.Intents.default()
@@ -77,10 +80,11 @@ async def on_voice_state_update(member, before, after):
         await voice_client.disconnect()
         print(f"Left the voice channel because {member} was the last one there.")
 
+#basic dice roll - asks for side amount
 @bot.tree.command(name="roll")
-async def roll(interaction: discord.Interaction, sides: arg):
-    result = random.randint(1, sides)
-    await interaction.response.send_message(f"{interaction.user.mention} rolled a {result} on a {sides}-sided die.", ephemeral=True)
+async def roll(interaction: discord.Interaction, d: int):
+    result = random.randint(1, d)
+    await interaction.response.send_message(f"{interaction.user.mention} rolled a {result} from a d{d}", ephemeral=True)
 
 #command to wake up devices using WoL, buttons are generated from the WoLMenu class
 @bot.tree.command(name="wake")
@@ -98,6 +102,21 @@ async def on_typing(channel, user, when):
         ]
         response = random.choice(responses)
         await channel.send(response)
+
+@bot.tree.command(name="osrs")
+async def osrs(interaction: discord.Interaction, username: str):
+    await client.start()
+    result = await client.players.update_player(username)
+    if result.is_ok:
+        combat_level = result.unwrap().combat_level
+        data = result.unwrap().latest_snapshot.data
+        skills = ['overall','attack','defence','strength','hitpoints','ranged','prayer','magic','cooking','woodcutting','fletching','fishing','firemaking','crafting','smithing','mining','herblore','agility','thieving','slayer','farming','runecrafting','hunter','construction', 'sailing']
+        message = f"{username}'s combat level is {combat_level}.\n \n"
+    for skill in skills:
+        exp = data.skills[skill].experience
+        lvl = data.skills[skill].level
+        message += f"{skill.capitalize()}: Level: {lvl} ({exp} XP)\n"
+    await interaction.response.send_message(message, delete_after=15)
 
 
 bot.run(token, log_handler=handler, log_level=logging.DEBUG)
