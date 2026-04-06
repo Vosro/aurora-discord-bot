@@ -37,7 +37,8 @@ async def on_ready():
 
 @bot.command()
 async def test(ctx):
-    await ctx.send(f"test command initiated by {ctx.author.mention}, {bot.user.name} is online and ready to respond. Local Portainer can be reached at https://192.168.1.154:9443/#!/home if needed.")
+    await ctx.message.delete()
+    await ctx.send(f"test command initiated by {ctx.author.mention}, {bot.user.name} is online and ready to respond. Local Portainer can be reached at https://192.168.1.154:9443/#!/home if needed.", delete_after=10)
 
 
 @bot.command()
