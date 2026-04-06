@@ -71,11 +71,10 @@ async def leave(ctx):
     else:
         await ctx.send("I am not connected to a voice channel.", delete_after=5)
 
-@bot.command()
+@bot.tree.command(name="wake")
 @commands.has_permissions(administrator=True)
-async def wake(ctx):
-    await ctx.message.delete()
-    await ctx.send("Choose a device to wake up:", view=WoLMenu(), delete_after=30)
+async def wake(interaction: discord.Interaction):
+    await interaction.response.send_message("Choose a device to wake up:", view=WoLMenu(), ephemeral=True)
 
 @bot.event
 async def on_typing(channel, user, when):
