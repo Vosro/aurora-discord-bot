@@ -81,6 +81,7 @@ async def on_voice_state_update(member, before, after):
 @commands.has_permissions(administrator=True)
 async def wake(interaction: discord.Interaction):
     await interaction.response.send_message("Choose a device to wake up:", view=WoLMenu(), ephemeral=True, delete_after=30)
+    await interaction.response.edit_message(content="Choose a device to wake up:", view=None)
 
 #1% chance to respond to someone typing
 @bot.event
