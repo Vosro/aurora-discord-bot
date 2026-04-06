@@ -78,6 +78,7 @@ async def on_voice_state_update(member, before, after):
 
 #command to wake up devices using WoL, buttons are generated from the WoLMenu class
 @bot.tree.command(name="wake")
+@commands.has_permissions(administrator=True)
 async def wake(interaction: discord.Interaction):
     await interaction.response.send_message("Choose a device to wake up:", view=WoLMenu(), ephemeral=True, delete_after=30)
 
