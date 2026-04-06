@@ -1,3 +1,5 @@
+from ast import arg
+
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -75,13 +77,16 @@ async def on_voice_state_update(member, before, after):
         await voice_client.disconnect()
         print(f"Left the voice channel because {member} was the last one there.")
 
+@bot.tree.command(name="roll")
+async def roll(interaction: discord.Interaction, sides: arg):
+    result = random.randint(1, sides)
+    await interaction.response.send_message(f"{interaction.user.mention} rolled a {result} on a {sides}-sided die.", ephemeral=True)
 
 #command to wake up devices using WoL, buttons are generated from the WoLMenu class
 @bot.tree.command(name="wake")
 @commands.has_permissions(administrator=True)
 async def wake(interaction: discord.Interaction):
-    await interaction.response.send_message("Choose a device to wake up:", view=WoLMenu(), ephemeral=True, delete_after=30)
-    await interaction.response.edit_message(content="Choose a device to wake up:", view=None)
+    await interaction.response.send_message("Choose a device to wake up:", view=WoLMenu(), ephemeral=True, delete_after=15)
 
 #1% chance to respond to someone typing
 @bot.event
