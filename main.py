@@ -1,5 +1,3 @@
-from unittest import result
-
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -103,20 +101,39 @@ async def on_typing(channel, user, when):
         response = random.choice(responses)
         await channel.send(response)
 
+#pulls osrs stats from WOM
 @bot.tree.command(name="osrs")
 async def osrs(interaction: discord.Interaction, username: str):
-    await client.start()
-    result = await client.players.update_player(username)
-    if result.is_ok:
-        combat_level = result.unwrap().combat_level
-        data = result.unwrap().latest_snapshot.data
-        skills = ['overall','attack','defence','strength','hitpoints','ranged','prayer','magic','cooking','woodcutting','fletching','fishing','firemaking','crafting','smithing','mining','herblore','agility','thieving','slayer','farming','runecrafting','hunter','construction', 'sailing']
-        message = f"{username}'s combat level is {combat_level}.\n \n"
-    for skill in skills:
-        exp = data.skills[skill].experience
-        lvl = data.skills[skill].level
-        message += f"{skill.capitalize()}: Level: {lvl} ({exp} XP)\n"
-    await interaction.response.send_message(message, delete_after=15)
+    try:
+        await client.start()
+        result = await client.players.update_player(username)
+        if result.is_ok:
+            combat_level = result.unwrap().combat_level
+            data = result.unwrap().latest_snapshot.data
+            skills = ['attack','defence','strength','hitpoints','ranged','prayer','magic','cooking','woodcutting','fletching','fishing','firemaking','crafting','smithing','mining','herblore','agility','thieving','slayer','farming','runecrafting','hunter','construction', 'sailing']
+            overall_lvl = data.skills['overall'].level
+            overall_exp = data.skills['overall'].experience
+            overall = f"Lvl {overall_lvl} ({overall_exp:,} XP)"
+
+            skill_lines = []
+            for i in range(0, len(skills), 3):
+                skill_group = skills[i:i+3]
+                line_parts = []
+                for skill in skill_group:
+                    exp = data.skills[skill].experience
+                    lvl = data.skills[skill].level
+                    line_parts.append(f"{skill.capitalize()}: Lvl {lvl} ({exp:,} XP)")
+                skill_lines.append("  ".join(line_parts))
+            
+            skills_text = "\n".join(skill_lines)
+            message = f"```\n{username}'s Combat Level: {combat_level} | Total Level: {overall}\n\n{skills_text}\n```"
+            await interaction.response.send_message(message, delete_after=15)
+        else:
+            await interaction.response.send_message(f"Could not find player: {username}", delete_after=15)
+    except Exception as e:
+        await interaction.response.send_message(f"Error fetching stats: {str(e)}", delete_after=15)
+    finally:
+        await client.close()
 
 
 bot.run(token, log_handler=handler, log_level=logging.DEBUG)
