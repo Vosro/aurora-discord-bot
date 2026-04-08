@@ -18,7 +18,7 @@ intents.message_content = True
 intents.members = True
 intents.voice_states = True
 
-bot = commands.Bot(command_prefix='!', intents=intents, status=discord.Status.idle, activity=discord.CustomActivity(name="jorkin it"))
+bot = commands.Bot(command_prefix='!', intents=intents, status=discord.Status.idle, activity=discord.CustomActivity(name="probably masturbating"))
 
 ## verifies bot is running and commands are synced
 @bot.event
