@@ -93,10 +93,11 @@ async def wake(interaction: discord.Interaction):
 #1% chance to respond to someone typing
 @bot.event
 async def on_typing(channel, user, when):
-    if random.randint(1, 100) == 1 and user != bot.user:
+    if random.randint(1, 1000) == 1 and user != bot.user:
         responses = [
             f"oh brother {user.name} is typing again",
             f"what is it this time {user.name}?",
+            f"brother why you speaking?"
         ]
         response = random.choice(responses)
         await channel.send(response)
