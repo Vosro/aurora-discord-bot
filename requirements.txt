@@ -3,3 +3,4 @@ python-dotenv
 wakeonlan
 discord.py[voice]
 wom.py
+traceback
