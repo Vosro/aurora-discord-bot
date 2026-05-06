@@ -71,7 +71,7 @@ class Ticket(commands.Cog):
     async def ticket(self, ctx):
         await ctx.send("Click the button below to open a ticket!", view=self.TicketButton())
 
-    #closes ticket channel
+    #archives ticket channel
     @app_commands.command(name="close")
     async def close(self, interaction: discord.Interaction, category_name: str = "Archived Tickets"):
         if interaction.channel.name.startswith("🎟️ticket-"):
@@ -82,7 +82,7 @@ class Ticket(commands.Cog):
             }
             if category:
                 await interaction.channel.edit(category=category, overwrites=overwrites)
-                await interaction.response.send_message(f"```Ticket closed and archived``` {interaction.user}")
+                await interaction.response.send_message(f"```Ticket closed and archived``` by: {interaction.user}")
             else:
                 await interaction.response.send_message(f"Category '{category_name}' not found.", ephemeral=True, delete_after=5)
         else:
