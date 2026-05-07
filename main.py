@@ -18,9 +18,9 @@ intents.guilds = True
 
 class MyBot(commands.Bot):
     async def setup_hook(self):
+        # Load all cogs in well.. ./cogs
         for filename in os.listdir('./cogs'):
             if filename.endswith('.py'):
-                # Load the extension (e.g., cogs.moderation)
                 await self.load_extension(f'cogs.{filename[:-3]}')
                 print(f'Loaded extension: {filename}')
 bot = MyBot(command_prefix='!', intents=intents, status=discord.Status.idle, activity=discord.CustomActivity(name="jorkin it"))
@@ -35,10 +35,20 @@ async def on_ready():
     except Exception as e:
         print(f"Error syncing commands: {e}")
     try:
+        #keep already posted ticket buttons working after bot restarts
         from cogs.Ticket import Ticket
-        bot.add_view(Ticket.TicketButton()) #keep the ticket button working if you restart
+        bot.add_view(Ticket.TicketButton())
     except Exception as e:
         print(f"Error adding TicketButton view: {e}")
 
+@bot.tree.command(name="reload", description="Reloads all cogs")
+@commands.is_owner()
+async def reload_cogs(interaction: discord.Interaction):
+    for filename in os.listdir('./cogs'):
+        if filename.endswith('.py'):
+            await bot.reload_extension(f'cogs.{filename[:-3]}')
+            print(f'Reloaded extension: {filename}')
+    await interaction.response.send_message("Cogs reloaded!", ephemeral=True, delete_after=10)
 
-bot.run(token)
+bot.run(token, log_handler=handler, log_level=logging.DEBUG)
+#bot.run(token)
