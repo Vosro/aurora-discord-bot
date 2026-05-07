@@ -50,5 +50,5 @@ async def reload_cogs(interaction: discord.Interaction):
             print(f'Reloaded extension: {filename}')
     await interaction.response.send_message("Cogs reloaded!", ephemeral=True, delete_after=10)
 
-bot.run(token, log_handler=handler, log_level=logging.DEBUG)
-#bot.run(token)
+#bot.run(token, log_handler=handler, log_level=logging.DEBUG)
+bot.run(token)
